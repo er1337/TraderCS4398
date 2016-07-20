@@ -6,7 +6,7 @@
 #define TRADERCS4398_SMACROSS_H
 
 #include <vector>
-#include "Bar.h"        //include the Bar struct. Bad practice to include in a header file?
+#include "Bar.h"
 //#include "sma.h"        //todo: make SMA function
 
 #include <iostream>
