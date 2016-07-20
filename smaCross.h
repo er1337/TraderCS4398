@@ -19,7 +19,6 @@ namespace strat {
     enum ohlc_t {
         open, high, low, close
     };
-
     //  Function smaCross
     //  series: the entire vector of Bars, each bar containing 1 unit of price data
     //  length: how far back the SMA looks when calculating average
@@ -40,6 +39,7 @@ namespace strat {
         }
 
         return ERR;
+
     }
 }
 

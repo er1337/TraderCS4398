@@ -2,11 +2,16 @@
 #include <vector>
 #include "Bar.h"
 #include "smaCross.h"
+#include "menus.h"
 
 using namespace std;
 
 int main() {
-    cout << "Hello, World!" << endl;
+    #ifdef WINDOWS
+        std::system("title Trader");
+    #endif
+
+
 
     Bar bar1;
     bar1.close=1;
@@ -14,6 +19,9 @@ int main() {
     bar2.close=2;
 
     vector<Bar> bars = {bar1, bar2};
+
+    bars[1].close;
+    bars.at(1);
 
     strat::smaCross(bars, 0);
 
