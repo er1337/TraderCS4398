@@ -7,10 +7,9 @@
 
 #include <vector>
 #include "Bar.h"
-//#include "sma.h"        //todo: make SMA function
-
+#include "indicator.h"
 #include <iostream>
-#include <algorithm>
+//#include <algorithm>
 namespace strat {
 
     enum signal_t {
@@ -33,7 +32,8 @@ namespace strat {
         //using std::begin; using std::end; using std::next;
         //std::for_each(next(begin(series), longestLength), end(series), [](auto&& i) {
         //     });
-
+		
+		//can use auto?
         for(std::vector<Bar>::const_iterator i = (series.begin()+longestLength); i != series.end(); ++i){
             std::cout << i->close;
         }
