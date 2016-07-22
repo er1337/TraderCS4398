@@ -6,10 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(SOURCE_FILES
     Bar.h
     main.cpp
-<<<<<<< HEAD
-    smaCross.h indicator.h)
-=======
+    smaCross.h indicator.h
     smaCross.h menus.h csvToVector.h)
->>>>>>> origin/master
 
 add_executable(TraderCS4398 ${SOURCE_FILES})

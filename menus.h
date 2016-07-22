@@ -22,15 +22,24 @@ void clear_screen() {
 
 void printMenuMain(){
     cout << TITLE << endl;
-    cout << "Select an option." << endl;
-    cout << "1. Set input file" << endl;
-    cout << "2. Load account" << endl;
+    cout << "Select an option."     << endl;
+    cout << "1. Set input file"     << endl;
+    cout << "2. Load account"       << endl;
     cout << "3. Create new account" << endl;
+    cout << "0. Back"               << endl;
+    cout << endl;
 }
 void printMenuInputFile(){
     cout << TITLE << endl;
-    cout << "Load input CSV file" << endl;
-    cout << "Name of input file: " << endl;
+    cout << "Load input CSV file"   << endl;
+    cout << "Name of input file: "  << endl;
+    cout << endl;
+}
+void printMenuStrategy(){
+    cout << TITLE << endl;
+    cout << "Load input CSV file"   << endl;
+    cout << "Name of input file: "  << endl;
+    cout                            << endl;
 }
 
 
