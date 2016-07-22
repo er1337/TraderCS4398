@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <cstdlib>
-using std::cout, using std::endl;
+using std::cout; using std::endl;
 
 const char* TITLE = "Trading System";
 
