@@ -46,7 +46,7 @@ class processCSV
         std::vector<std::string> m_data;
 };
 
-std::istream& operator>>(std::istream& str, CSVRow& data)
+std::istream& operator>>(std::istream& str, processCSV& data)
 {
     data.readNextRow(str);
     return str;
