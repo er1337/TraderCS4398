@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <cstdlib>
-using std::cout; using std::endl;
+using std::cout; using std::endl; using std::cin;
 
 const char* TITLE = "Trading System";
 
@@ -19,6 +19,26 @@ void clear_screen() {
         std::system ("clear");
     #endif
 }
+/**
+template <typename T>
+T getInput(){
+    cout << "Enter: ";
+    T in;
+    cin << T;
+    return T;
+}
+template <typename T>
+T getInput(T minVal, T maxVal){
+    cout << "Enter: ";
+    T in;
+    cin << T;
+    while(T < minVal || T > maxVal){
+        cout << "bad input, etc \nEnter: ";
+        cin << T;
+    }
+    return T;
+}
+ **/
 
 void printMenuMain(){
     cout << TITLE << endl;
@@ -37,9 +57,11 @@ void printMenuInputFile(){
 }
 void printMenuStrategy(){
     cout << TITLE << endl;
-    cout << "Load input CSV file"   << endl;
-    cout << "Name of input file: "  << endl;
-    cout                            << endl;
+    cout << "Select strategy to use"         << endl;
+    cout << "1. Price Cross Moving Average"  << endl;
+    cout << "2. Double Moving Average Cross" << endl;
+    cout << "...";
+    cout << endl;
 }
 
 

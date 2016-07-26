@@ -18,21 +18,18 @@ int main() {
     Bar bar1;
     bar1.close=1;
     Bar bar2;
-    bar2.close=2;
+    bar2.close=1;
     Bar bar3;
-    bar2.close=3;
+    bar3.close=2;
     Bar bar4;
-    bar2.close=4;
+    bar4.close=1;
     Bar bar5;
-    bar2.close=5;
+    bar5.close=1;
 
-    vector<Bar> bars = {bar1, bar2, bar3, bar4, bar5};
-
-    bars[1].close;
-    bars.at(1);
-
-    strat::smaCross(bars, 0);
-
+    vector<Bar> bars = {bar1,bar2,bar3,bar4,bar5};
+    vector<strat::signal_t> smaCrossSignals;
+    smaCrossSignals = strat::smaCross(bars, 2); //must call with at least 1
+    for(auto i : smaCrossSignals) cout << i << endl;
 
     return 0;
 }

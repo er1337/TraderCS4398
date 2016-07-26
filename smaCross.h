@@ -9,23 +9,25 @@
 #include "Bar.h"
 #include "indicator.h"
 #include <iostream>
+#include <cassert>
+#include <vector>
 //#include <algorithm>
+using std::vector;
 namespace strat {
 
     enum signal_t {
         SELL = -1, BUY = 1, HOLD = 0, ERR = -2
     };
-    enum ohlc_t {
-        open, high, low, close
-    };
+
     //  Function smaCross
     //  series: the entire vector of Bars, each bar containing 1 unit of price data
     //  length: how far back the SMA looks when calculating average
     //  returns:  BUY when source crosses above sma, SELL when below, else hold
 
-    signal_t smaCross(const std::vector<Bar>& series, int length) {
+    vector<signal_t> smaCross(const std::vector<Bar>& series, int length=1) {
+        assert(length>0);
         // ... if the SMA length is 50 bars, we can't begin calculation until the 50th bar
-        // ... so some code goes here to start the for loop at some length
+        // ... so some code goes here to start the for loop at that length
         // ... if 2+ parameters are given, the longest length will be the one to consider
         int longestLength = length;
 
@@ -34,11 +36,19 @@ namespace strat {
         //     });
 		
 		//can use auto?
-        for(std::vector<Bar>::const_iterator i = (series.begin()+longestLength); i != series.end(); ++i){
-            std::cout << i->close;
-        }
 
-        return ERR;
+        vector<signal_t> signals; //will hold series of corresponding trade signals for input series
+
+        for(auto i=series.begin(); i != series.end(); ++i) {
+            if (i - series.begin() < longestLength) signals.push_back(ERR);
+            else {
+                float sma = indicator::sma(series, i, length);
+                if (i->close > sma) signals.push_back(BUY);
+                else if (i->close < sma) signals.push_back(SELL);
+                else signals.push_back(HOLD);
+            }
+        }
+        return signals;
 
     }
 }
