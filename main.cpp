@@ -17,6 +17,11 @@ int main() {
 
     Bar bar1;
     bar1.close=1;
+    bar1.open=2;
+    bar1.high=40;
+    bar1.low=-40;
+    bar1.date = "ayyy";
+    bar1.volume=123;
     Bar bar2;
     bar2.close=1;
     Bar bar3;
@@ -25,6 +30,8 @@ int main() {
     bar4.close=1;
     Bar bar5;
     bar5.close=1;
+
+    cout << bar1;
 
     vector<Bar> bars = {bar1,bar2,bar3,bar4,bar5};
     vector<strat::signal_t> smaCrossSignals;

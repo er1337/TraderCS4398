@@ -6,9 +6,13 @@
 #define TRADERCS4398_BAR_H
 
 typedef struct Bar{
-    char* date[20];
+    std::string date;
     float open, high, low, close;
-    int volume;
+    unsigned int volume;
 } Bar;
 
+// cout << bar
+std::ostream &operator<<(std::ostream &str, const Bar &bar) {
+    str << bar.date<<"\tO:"<<bar.open<<"\tH:"<<bar.high<<"\tL:"<<bar.low<<"\tC:"<<bar.close<<"\tV:"<<bar.volume;
+}
 #endif //TRADERCS4398_BAR_H
