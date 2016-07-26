@@ -66,11 +66,11 @@ int main() {
     // FIXME -- insert assert here to check if file opens on success/fail? ?
     processCSV row;
     int counter = 0;
-    bool ignore = true;
+    bool ignoreHeader = true;
     //temp.push_back(Bar);
     while (file >> row) {
-        if (counter == 0 && ignore) {
-            ignore = false;
+        if (counter == 0 && ignoreHeader) {
+            ignoreHeader = false;
             continue;
         }
         temp.date   = row[0]; //write date string to char[] in Bar
@@ -80,7 +80,7 @@ int main() {
         temp.close  = row.conv_float(row[4]);
         temp.volume = row.conv_int(row[5]);
         actual.push_back(temp);  //push this Bar into vector<Bar>
-        std::cout << temp << std::endl;
+
     }
 
     std::cout << std::endl;

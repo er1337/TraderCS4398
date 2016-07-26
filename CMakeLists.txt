@@ -7,6 +7,6 @@ set(SOURCE_FILES
     Bar.h
     main.cpp
     smaCross.h indicator.h
-    smaCross.h menus.h csvToVector.h)
+    smaCross.h Menus.h csvToVector.h)
 
 add_executable(TraderCS4398 ${SOURCE_FILES})

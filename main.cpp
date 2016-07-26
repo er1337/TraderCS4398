@@ -4,7 +4,7 @@
 #include <vector>
 #include "Bar.h"
 #include "smaCross.h"
-#include "menus.h"
+#include "Menus.h"
 
 using namespace std;
 
@@ -12,6 +12,10 @@ int main() {
     #ifdef WINDOWS
         std::system("title Trader");
     #endif
+
+
+    Menus menusystem;
+    menusystem.runMenu();
 
 
 
@@ -30,8 +34,6 @@ int main() {
     bar4.close=1;
     Bar bar5;
     bar5.close=1;
-
-    cout << bar1;
 
     vector<Bar> bars = {bar1,bar2,bar3,bar4,bar5};
     vector<strat::signal_t> smaCrossSignals;
