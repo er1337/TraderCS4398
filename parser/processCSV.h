@@ -1,12 +1,18 @@
 /*
  
-   processCSV.h
+   FILE: processCSV.cpp
    
    Darren Rambaud
    July 25, 2016
  
    The header file for processCSV class.
- 
+   
+   CONSTANTS
+     None
+
+   
+
+   
  */
 
 #ifndef PROCESS_CSV_H
@@ -22,7 +28,7 @@ typedef struct bar{
          high, 
          low, 
          close; 
-   int volume; 
+   unsigned int volume; 
 } bar;
 
 class processCSV{

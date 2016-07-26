@@ -1,12 +1,17 @@
 /*
 
-   processCSV.cpp
+  FILE: processCSV.cpp
    
    Darren Rambaud
    July 25, 2016
 
    The implementation file for processCSV.cpp. The following lines of code
-   process a Comma Separated Value (CSV) file..
+   process a Comma Separated Value (CSV) file.
+ 
+   INVARIANT for processCSV class:
+   (1) Values (strings, floats, integers) are imported/parsed from a CSV file
+       into a 1D vector of struct objects
+   (2) The initial header line of the CSV file is ignored.
 
 */
 
