@@ -1,13 +1,16 @@
 //Wesley Myres//
 #include "Account.h"
 
+int Account::_idIncrement = 1;
+
 Account::Account() {}
 Account::Account(string name, float balance, map<string, Stock> stocks)	:
 	_name(name),
 	_balance(balance),
 	_stocks(stocks)
 {
-	_log = new AccountActivityLog(_name + "_log");
+	_id = ++_idIncrement;
+	_log = new AccountActivityLog(_idIncrement + "_log.txt");
 }
 Account::~Account() 
 {
