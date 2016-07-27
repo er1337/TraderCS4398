@@ -1,3 +1,4 @@
+//Wesley Myres//
 #include "Account.h"
 
 Account::Account() {}

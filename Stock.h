@@ -1,5 +1,5 @@
 #pragma once
-
+//Wesley Myres//
 #include <string> 
 
 using namespace std;

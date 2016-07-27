@@ -1,6 +1,5 @@
+//Wesley Myres//
 #include "AccountActivityLog.h"
-
-
 
 AccountActivityLog::AccountActivityLog() {}
 AccountActivityLog::AccountActivityLog(string filename) :
