@@ -1,5 +1,7 @@
 .idea/workspace.xml
 **/workspace.xml
+build/
+/build/
 
 # C++ ignores
 # Prerequisites

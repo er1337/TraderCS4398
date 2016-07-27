@@ -15,7 +15,7 @@ int main() {
 
 
     Menus menusystem;
-    menusystem.runMenu();
+    menusystem.runMenuMain();
 
 
 
@@ -36,7 +36,7 @@ int main() {
     bar5.close=1;
 
     vector<Bar> bars = {bar1,bar2,bar3,bar4,bar5};
-    vector<strat::signal_t> smaCrossSignals;
+    vector<signal_t> smaCrossSignals;
     smaCrossSignals = strat::smaCross(bars, 2); //must call with at least 1
     for(auto i : smaCrossSignals) cout << i << endl;
 

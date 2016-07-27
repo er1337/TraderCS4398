@@ -88,6 +88,7 @@ public:
                 //runSubmenuLoadAccount();
                 break;
             case 3:
+                runSubmenuCreateAccount();
                 break;
         }
     }
@@ -97,12 +98,22 @@ public:
         // this is the point where I gave up making it all modular
         cout << "Change delimiter? (default=',') \nY/N: ";
         char choice = getInput<char>(); //call setDelimiter after
-        clear_screen();
+
         switch (choice){
             case 'y':
             case 'Y':
                 cout << "Enter custom delimiter: \n";
                 delimiter = getInput<char>();
+
+        cout << "Skip first header row? (default='Y') \nY/N: ";
+        choice = getInput<char>(); //call setDelimiter after
+        switch (choice){
+            case 'n':
+            case 'N':
+
+                delimiter = getInput<char>();
+
+        clear_screen();
         }
     }
 

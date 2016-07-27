@@ -1,6 +1,4 @@
-//
-// Created by Owner on 7/19/2016.
-//
+/*
 
 #ifndef TRADERCS4398_CSVTOVECTOR_H
 #define TRADERCS4398_CSVTOVECTOR_H
@@ -21,10 +19,14 @@ vector<Bar> csvToVector(char* csvFile){
         {
             unsigned int i = 0;
 
-            /* Get the record */
+            */
+/* Get the record *//*
+
             csv_row row = parser.get_row();
 
-            /* Print out each column in the row */
+            */
+/* Print out each column in the row *//*
+
             for (i = 0; i < row.size(); i++)
             {
                 printf("COLUMN %02d : %s\n", i + 1U, row[i].c_str());
@@ -46,3 +48,4 @@ vector<Bar> csvToVector(char* csvFile){
 }
 
 #endif //TRADERCS4398_CSVTOVECTOR_H
+*/

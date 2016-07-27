@@ -7,17 +7,14 @@
 
 #include <vector>
 #include "Bar.h"
+#include "signal_t.h"
 #include "indicator.h"
 #include <iostream>
 #include <cassert>
 #include <vector>
-//#include <algorithm>
 using std::vector;
 namespace strat {
 
-    enum signal_t {
-        SELL = -1, BUY = 1, HOLD = 0, ERR = -2
-    };
 
     //  Function smaCross
     //  series: the entire vector of Bars, each bar containing 1 unit of price data
