@@ -1,7 +1,3 @@
-//
-// Created by Owner on 7/21/2016.
-//
-
 #ifndef TRADERCS4398_INDICATOR_H
 #define TRADERCS4398_INDICATOR_H
 #include "Bar.h"
@@ -25,12 +21,12 @@ namespace indicator{
     static float ema(const std::vector<Bar> &series, std::vector<Bar>::const_iterator end, int length = 1) {
         if (length == 1) return end->close;  //moving average of length 1 always same as original price
 
-        float sma = sma(series, end, length);
+        //float sma = sma(series, end, length);
         //replace with auto?
         for(std::vector<Bar>::const_iterator i = end; i != (end - length); --i){
-            sum += i->close;
+
         }
-        return sum /  length;
+        return length;
     }
 }
 

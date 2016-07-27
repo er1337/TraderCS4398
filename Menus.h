@@ -14,10 +14,18 @@ private:
     const char* TITLE = "Trading System";
     string infile = "not-set";
     char delimiter = ',';
-    //vector of accounts
+    bool ignoreHeader = true;
+
+    //list of accounts
 
 public:
-    string getInfile(){ return infile; }
+    // return csv related inputs as a group
+    // you know in python, you can have a function return multiple variables at once. In c++, its weirder.
+    void getCSVparameters(string& infileOutput, char& delimiterOutput, bool& ignoreHeaderOutput){
+        infileOutput = infile;
+        delimiterOutput = delimiter;
+        ignoreHeaderOutput = ignoreHeader;
+    }
 
     void clear_screen() {
         #ifdef WINDOWS
@@ -88,10 +96,14 @@ public:
                 //runSubmenuLoadAccount();
                 break;
             case 3:
-                runSubmenuCreateAccount();
+                //runSubmenuCreateAccount();
                 break;
+            case 4:
+                runSubmenuSelectStrategy();
         }
     }
+
+
     void runSubmenuInputFile(){
         printMenuInputFile();
         infile = getInput<std::string>();
@@ -99,24 +111,32 @@ public:
         cout << "Change delimiter? (default=',') \nY/N: ";
         char choice = getInput<char>(); //call setDelimiter after
 
-        switch (choice){
+        switch (choice) {
             case 'y':
             case 'Y':
                 cout << "Enter custom delimiter: \n";
                 delimiter = getInput<char>();
+        }
 
         cout << "Skip first header row? (default='Y') \nY/N: ";
-        choice = getInput<char>(); //call setDelimiter after
-        switch (choice){
+        choice = getInput<char>();
+        switch (choice) {
             case 'n':
             case 'N':
-
-                delimiter = getInput<char>();
-
+                ignoreHeader = false;
+        }
         clear_screen();
+    }
+    void runSubmenuSelectStrategy(){
+        printMenuStrategy();
+        int choice = getInput<int>();
+        clear_screen();
+        switch (choice) {
+            case '1':
+                cout << "ay, you chose strat one"; break;
+            default:
+                cout << "ay, yu chose a strat";
         }
     }
-
-
 };
 #endif //TRADERCS4398_MENUS_H

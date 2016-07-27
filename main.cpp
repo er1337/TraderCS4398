@@ -1,6 +1,4 @@
 #include <iostream>
-
-//temporary includes
 #include <vector>
 #include "Bar.h"
 #include "smaCross.h"
