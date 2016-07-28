@@ -30,7 +30,7 @@ private:
 
     //list of accounts loaded in
 
-    menuAction_t currentSelectedAction;
+    menuAction_t currentSelectedAction = nothing;
 
 public:
     // return csv related inputs as a group
@@ -157,7 +157,7 @@ public:
             case runStrategy:
                 return runStrategy;
             default:
-                goto MENUSTART; // fuck da police
+                goto MENUSTART;
         }
     }
 

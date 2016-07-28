@@ -38,13 +38,14 @@ int main() {
             map<string, Stock> m = {{"STOK", s}};
             Account a ("JP Morgan", 1000, m);
             vector<signal_t> orderSignals = strat::smaCross(series, movingavglength);
-            StrategyRunner sr(a, series, orderSignals, commission);
+
+            StrategyRunner sr(&a, series, orderSignals, commission);
             sr.runStrategy();
-            cout << "\n\n\n===============================" <<endl;
-            cout << "Initial Balance: "<< a.getInitBalance() <<endl;
-            cout << "Final Balance: "<< a.getBalance() <<endl;
-            cout << "Profit %: "<< int((a.getBalance() / a.getInitBalance())*100) <<endl;
-            cin.get();
+//            cout << "\n\n\n===============================" <<endl;
+//            cout << "Initial Balance: "<< a.getInitBalance() <<endl;
+//            cout << "Final Balance: "<< a.getBalance() <<endl;
+//            cout << "Profit %: "<< int((a.getBalance() / a.getInitBalance())*100) <<endl;
+//            cin.get();
             break;
     }
 

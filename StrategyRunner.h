@@ -23,7 +23,7 @@ private:
 
     // todo: bool to long, short, or both
 public:
-    StrategyRunner(Account& a, const vector<Bar> ps, const vector<signal_t> os, const float fee):
+    StrategyRunner(Account & a, const vector<Bar> ps, const vector<signal_t> os, const float fee):
             account(a), priceSeries(ps), orderSignals(os), commission(fee) {}
 
     //todo: make it work better with Account class and Stock class
@@ -100,10 +100,10 @@ public:
 //            account.setBalance(account.getBalance() + shortTotal);
 //        }
 
-//        cout << "\n\n===============================" <<endl;
-//        cout << "Initial Balance: "<< account.getInitBalance() <<endl;
-//        cout << "Final Balance: "<< account.getBalance() <<endl;
-//        cout << "Profit %: "<< int((account.getBalance() / account.getInitBalance())*100) <<endl;
+        cout << "\n\n===============================" <<endl;
+        cout << "Initial Balance: "<< account.getInitBalance() <<endl;
+        cout << "Final Balance: "<< account.getBalance() <<endl;
+        cout << "Profit %: "<< int((account.getBalance() / account.getInitBalance())*100) <<endl;
 
     }
 
