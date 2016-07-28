@@ -1,7 +1,13 @@
 .idea/workspace.xml
 **/workspace.xml
+/CMakeCache.txt
+/cmake_install.cmake
+
+#not sure which format works
 build/
 /build/
+CMakeFiles/
+/CMakeFiles/
 
 # C++ ignores
 # Prerequisites
@@ -30,3 +36,4 @@ build/
 *.exe
 *.out
 *.app
+

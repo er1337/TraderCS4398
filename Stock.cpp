@@ -19,4 +19,4 @@ bool Stock::subtractVolume(int value)
 	return true;
 }
 
-Stock::~Stock() {}
+//Stock::~Stock() {}

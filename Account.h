@@ -15,6 +15,9 @@ private:
 	static int _idIncrement;
 	int _id;
 	float _balance;
+	float _initBalance;
+
+private:
 	AccountActivityLog* _log;
 	string _name;
 	map<string, Stock> _stocks;
@@ -23,13 +26,16 @@ private:
 public:
 	Account();
 	Account(string, float, map<string, Stock>);
-	~Account();
+	//~Account();
 
 	float getBalance() { return _balance; }
+	float getInitBalance() const { return _initBalance;	}
+	void set_initBalance(float _initBalance) { Account::_initBalance = _initBalance; }
+
 	map<string, Stock> getStocks() { return _stocks; }
 	string getName() { return _name; }
 	void setName(string name) { _name = name; }
-	void setBalance(float balance) { _balance = balance;  }
+	void setBalance(float balance) { _balance = balance; }
 	void addStock(Stock stock);
 	bool removeStock(Stock stock);
 	Stock* getStock(string symbol);

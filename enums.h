@@ -7,4 +7,8 @@
 enum signal_t {
     SELL = -1, BUY = 1, HOLD = 0, ERR = -2
 };
+
+enum menuAction_t{
+    runStrategy
+};
 #endif //TRADERCS4398_SIGNAL_T_H

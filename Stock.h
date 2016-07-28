@@ -1,6 +1,8 @@
+#ifndef STOCK_H
+#define STOCK_H
 #pragma once
 //Wesley Myres//
-#include <string> 
+#include <string>
 
 using namespace std;
 
@@ -13,7 +15,7 @@ private:
 public:
 	Stock();
 	Stock(string, string, int);
-	~Stock();
+	//~Stock();
 
 	string getName() { return _name; }
 	string getSymbol() { return _symbol; }
@@ -25,3 +27,5 @@ public:
 	void addVolume(int value) { _volume += value; }
 	bool subtractVolume(int value);
 };
+
+#endif

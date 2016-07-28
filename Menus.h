@@ -7,16 +7,30 @@
 
 #include <iostream>
 #include <cstdlib>
+#include "enums.h"
 using std::cout; using std::endl; using std::cin; using std::string;
-class Menus{
 
+//todo: implement back menu choices
+class Menus{
 private:
     const char* TITLE = "Trading System";
+
+    //this aint right
     string infile = "not-set";
     char delimiter = ',';
     bool ignoreHeader = true;
 
-    //list of accounts
+    int strategyMenuChoice = 0;
+    int movingAverageLength = 25;
+    float strategyMenuCommission = 0;
+
+    bool accountLoaded = false;
+    bool fileLoaded = false;
+    bool stratLoaded = false;
+
+    //list of accounts loaded in
+
+    menuAction_t currentSelectedAction;
 
 public:
     // return csv related inputs as a group
@@ -26,7 +40,11 @@ public:
         delimiterOutput = delimiter;
         ignoreHeaderOutput = ignoreHeader;
     }
-
+    void getStrategyParameters(int &stratChoiceOut, int &movingAverageLengthOut, float &commissionOut) {
+        stratChoiceOut = strategyMenuChoice;
+        movingAverageLengthOut = movingAverageLength;
+        commissionOut = strategyMenuCommission;
+    }
     void clear_screen() {
         #ifdef WINDOWS
             std::system("cls");
@@ -56,7 +74,7 @@ public:
     void printMenuInputFile(){
         cout << TITLE << endl;
         cout << "Load input CSV file"   << endl;
-        cout << "Name of input file: "  << endl;
+        cout << "Name of input file"  << endl;
         cout << endl;
     }
     void printMenuStrategy(){
@@ -64,17 +82,36 @@ public:
         cout << "Select strategy to use"         << endl;
         cout << "1. Price Cross Moving Average"  << endl;
         cout << "2. Double Moving Average Cross" << endl;
-        cout << "3. ...";
+        cout << "3. ..."                         << endl;
+        cout << "4. ..."                         << endl;
+        cout << "5. ..."                         << endl;
+        cout << "0. Back"                        << endl;
+        cout << endl;
+    }
+    void printMenuStrategyParamters(){
+        cout << TITLE << endl;
+        cout << "Configure Strategy Parameters"         << endl;
+        cout << "1. Moving average Length (current="<<movingAverageLength<<")" << endl;
+        cout << "2. Commission for orders (current=$"<<strategyMenuCommission<<")" << endl;
+        cout << "3. ..."                                << endl;
+        cout << "4. ..."                                << endl;
+        cout << "0. Back"                               << endl;
         cout << endl;
     }
     void printMenuMain(){
         cout << TITLE << endl;
         cout << "Select an option."     << endl;
-        cout << "1. Set input file"     << endl;
+        if(fileLoaded)
+            cout << "1. Set input file (File Loaded)" << endl;
+        else
+            cout << "1. Set input file" << endl;
         cout << "2. Load account"       << endl;
         cout << "3. Create new account" << endl;
-        cout << "4. Select strategy"    << endl;
-        cout << "0. Back"               << endl;
+        if(accountLoaded && fileLoaded)
+            cout << "4. Setup strategy " << endl;
+        if(stratLoaded)
+            cout << "5. Start strategy" << endl;
+        cout << "0. Exit"               << endl;
         cout << endl;
     }
     void printMenuLoadAccount(){
@@ -82,9 +119,15 @@ public:
         cout << TITLE << endl;
         cout << "Select an option."     << endl;
         cout << "1. Account 1, etc etc" << endl;
+        cout << "0. Back"               << endl;
         cout << endl;
     }
-    void runMenuMain(){
+
+    void exitProgram() { exit(0); } //probably not good
+
+    menuAction_t runMenuMain(){
+        MENUSTART:
+        clear_screen();
         printMenuMain();
         int choice = getInput<int>();
         clear_screen();
@@ -94,12 +137,27 @@ public:
                 break;
             case 2:
                 //runSubmenuLoadAccount();
+                printMenuLoadAccount();
+                getInput<int>();
+                accountLoaded = true;
                 break;
             case 3:
                 //runSubmenuCreateAccount();
                 break;
             case 4:
                 runSubmenuSelectStrategy();
+                break;
+            case 5:
+                currentSelectedAction = runStrategy;
+                break;
+            case 0: exitProgram();
+        }
+        //after menus done, check if user has selected to start some action (only 1 so far)
+        switch(currentSelectedAction){
+            case runStrategy:
+                return runStrategy;
+            default:
+                goto MENUSTART; // fuck da police
         }
     }
 
@@ -126,17 +184,38 @@ public:
                 ignoreHeader = false;
         }
         clear_screen();
+        fileLoaded = true;
     }
     void runSubmenuSelectStrategy(){
         printMenuStrategy();
         int choice = getInput<int>();
-        clear_screen();
+        stratLoaded = true;
         switch (choice) {
             case '1':
-                cout << "ay, you chose strat one"; break;
+                strategyMenuChoice = choice; //there's got to be a better way
+                break;
             default:
-                cout << "ay, yu chose a strat";
+                cout << "ay, yu chose a strat" << endl;
         }
+        clear_screen();
+
+        printMenuStrategyParamters();
+        choice = getInput<int>();
+        switch (choice){
+            case 1:
+                cout << "Change moving average length (default=25)";
+                movingAverageLength = getInput<int>(1,9999); // todo: write another overloaded with only minvalue
+                break;
+            case 2:
+                cout << "Change commission rate per order (default=$0)";
+                strategyMenuCommission = getInput<float>(0,9999);
+                break;
+        }
+        clear_screen();
+        printMenuStrategyParamters();
+
     }
+
+
 };
 #endif //TRADERCS4398_MENUS_H
