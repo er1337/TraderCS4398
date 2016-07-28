@@ -3,9 +3,11 @@
 int main()
 {
    processCSV test;
-   std::vector<bar> data;
-
-   data = test.returnBarVector("BAC.csv");
+   std::vector<Bar> data;
+   test.setPath("csvAAPL.csv");
+//   test.setIgnore(false); -- it works!
+//   test.setDelimiter('\t');
+   data = test.returnBarVector();
 
    std::cout << "Compare to line 1 on the CSV worksheet ...\n" << std::endl;
 
