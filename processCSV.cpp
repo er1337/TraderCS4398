@@ -15,18 +15,42 @@
 
 */
 
+//#include "Bar.h"
 #include "processCSV.h"
 #include <iterator>
 #include <fstream>
 #include <sstream>
 
 //
+// FIXME 
+//
+processCSV::processCSV() : path("not-set"), delimiter(','), ignore(true)
+{
+}
+
+//
 // FIXME -- insert documentation
 //
-//void processCSV::setDelimiter(char delimiter)
-//{
-//   this->delimiter = delimiter;
-//} FIXME -- this function gives a warning when compiling ..
+void processCSV::setIgnore(bool ignore)
+{
+   this->ignore = ignore;
+}
+
+//
+// FIXME -- insert documentation
+//
+void processCSV::setPath(std::string path)
+{
+   this->path = path;
+}
+
+//
+// FIXME -- insert documentation
+//
+void processCSV::setDelimiter(char delimiter)
+{
+   this->delimiter = delimiter;
+}
 
 //
 // FIXME -- insert documentation
@@ -57,7 +81,7 @@ void processCSV::readNextRow(std::istream& str)
 
    p_data.clear();
            
-   while(std::getline(lineStream, cell, ',')){
+   while(std::getline(lineStream, cell, this->delimiter)){
       p_data.push_back(cell);
    }
 }
@@ -98,13 +122,13 @@ std::istream& operator>>(std::istream& str, processCSV& data)
 //
 // FIXME -- insert documentation
 //
-std::vector<bar> processCSV::returnBarVector(const std::string& path)
-{
+std::vector<Bar> processCSV::returnBarVector()
+{ //previously (const std::string& path)
 
-   bar temp;
-   std::vector<bar> actual;
+   Bar temp;
+   std::vector<Bar> actual;
 
-   std::ifstream file(path);
+   std::ifstream file(this->path);
    if (!file){
       std::cerr << "ERROR: Unable to open file" << std::endl;
       std::exit(-1);
@@ -112,11 +136,9 @@ std::vector<bar> processCSV::returnBarVector(const std::string& path)
 
    processCSV row;
    int counter = 0;
-   bool ignore = true;
- //  temp.push_back(bar());
    
     while(file >> row){
-       if (counter == 0 && ignore){// ignoring the header line of the .csv file
+       if (counter == 0 && this->ignore){// ignoring the header line of the .csv file
           ignore = false;
           continue;
        }
