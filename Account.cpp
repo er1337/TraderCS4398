@@ -1,4 +1,6 @@
 //Wesley Myres//
+#ifndef ACCOUNT_H
+#define ACCOUNT_H
 #include "Account.h"
 
 int Account::_idIncrement = 1;
@@ -6,16 +8,16 @@ int Account::_idIncrement = 1;
 Account::Account() {}
 Account::Account(string name, float balance, map<string, Stock> stocks)	:
 	_name(name),
-	_balance(balance),
+	_balance(balance), _initBalance(balance),
 	_stocks(stocks)
 {
 	_id = ++_idIncrement;
 	_log = new AccountActivityLog(_idIncrement + "_log.txt");
 }
-Account::~Account() 
-{
-	delete _log;
-}
+//Account::~Account()
+//{
+//	delete _log;
+//}
 
 bool Account::stockExists(string symbol)
 {
@@ -47,3 +49,5 @@ bool Account::removeStock(Stock stock)
 	else 
 		return _stocks[stock.getSymbol()].subtractVolume(stock.getVolume());
 }
+
+#endif

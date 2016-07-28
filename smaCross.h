@@ -7,11 +7,10 @@
 
 #include <vector>
 #include "Bar.h"
-#include "signal_t.h"
+#include "enums.h"
 #include "indicator.h"
 #include <iostream>
 #include <cassert>
-#include <vector>
 using std::vector;
 namespace strat {
 
@@ -43,6 +42,7 @@ namespace strat {
                 if (i->close > sma) signals.push_back(BUY);
                 else if (i->close < sma) signals.push_back(SELL);
                 else signals.push_back(HOLD);
+                // may be faster to initially set size instead of pushing each one
             }
         }
         return signals;

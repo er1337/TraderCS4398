@@ -31,7 +31,7 @@ class processCSV{
       bool ignore;
    public:
       processCSV();
-      void setIgnore(bool ignore);
+      void setIgnoreHeader(bool ignore);
       void setPath(std::string path);
       void setDelimiter(char delimiter);
       std::string const& operator[](std::size_t index) const;

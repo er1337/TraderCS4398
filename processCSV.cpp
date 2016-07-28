@@ -31,7 +31,7 @@ processCSV::processCSV() : path("not-set"), delimiter(','), ignore(true)
 //
 // FIXME -- insert documentation
 //
-void processCSV::setIgnore(bool ignore)
+void processCSV::setIgnoreHeader(bool ignore)
 {
    this->ignore = ignore;
 }
@@ -121,16 +121,16 @@ std::istream& operator>>(std::istream& str, processCSV& data)
 
 //
 // FIXME -- insert documentation
-//
+// Invariant: Must have valid path set.
 std::vector<Bar> processCSV::returnBarVector()
 { //previously (const std::string& path)
 
    Bar temp;
    std::vector<Bar> actual;
 
-   std::ifstream file(this->path);
+   std::ifstream file(path);
    if (!file){
-      std::cerr << "ERROR: Unable to open file" << std::endl;
+      std::cerr << "ERROR: Unable to open file " << path << std::endl;
       std::exit(-1);
    }
 
@@ -138,7 +138,7 @@ std::vector<Bar> processCSV::returnBarVector()
    int counter = 0;
    
     while(file >> row){
-       if (counter == 0 && this->ignore){// ignoring the header line of the .csv file
+       if (counter == 0 && ignore){// ignoring the header line of the .csv file
           ignore = false;
           continue;
        }
