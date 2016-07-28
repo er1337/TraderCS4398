@@ -7,7 +7,7 @@ AccountActivityLog::AccountActivityLog(string filename) :
 {}
 AccountActivityLog::~AccountActivityLog() 
 {
-	closeLog();
+	_log.close();
 }
 
 void AccountActivityLog::appendLog(string value)

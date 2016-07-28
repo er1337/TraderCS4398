@@ -15,8 +15,6 @@ public:
 	AccountActivityLog();
 	AccountActivityLog(string filename);
 	~AccountActivityLog();
-	void openLog(string filename);
-	void closeLog();
 	vector<string> getLog();
 	void appendLog(string value);
 	void setFilename(string filename) { _filename = filename; }

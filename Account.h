@@ -12,6 +12,8 @@ class Account
 {
 
 private:
+	static int _idIncrement;
+	int _id;
 	float _balance;
 	AccountActivityLog* _log;
 	string _name;
@@ -31,6 +33,7 @@ public:
 	void addStock(Stock stock);
 	bool removeStock(Stock stock);
 	Stock* getStock(string symbol);
+	int getId() { return _id; }
 };
 
 
