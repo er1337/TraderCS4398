@@ -23,8 +23,8 @@ private:
 
     // todo: bool to long, short, or both
 public:
-    StrategyRunner(Account & a, const vector<Bar> ps, const vector<signal_t> os, const float fee):
-            account(a), priceSeries(ps), orderSignals(os), commission(fee) {}
+    StrategyRunner(Account* a, const vector<Bar> ps, const vector<signal_t> os, const float fee):
+            account(*a), priceSeries(ps), orderSignals(os), commission(fee) {}
 
     //todo: make it work better with Account class and Stock class
     void marketOrder(signal_t signal, float orderPrice){
