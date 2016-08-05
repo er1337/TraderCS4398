@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "enums.h"
+
 using std::cout; using std::endl; using std::cin; using std::string;
 
 //todo: implement back menu choices
