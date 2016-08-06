@@ -14,7 +14,7 @@ const int MAX_OPTIONS = 6,
           EXIT_PROG = -999;
 
 void printHeader();
-void printMainMenu(bool, string);
+void printMainMenu(const bool, const string);
 void clear_console();
 
 int main() {
@@ -252,7 +252,7 @@ void printHeader()
         << endl;
 }
 
-void printMainMenu(bool status, string file)
+void printMainMenu(const bool status, const string file)
 {
    cout << "~Main Menu~" << endl
         << "Please select an option below:" << endl
