@@ -5,6 +5,7 @@
 namespace indicator{
     // Returns simple moving average based on close
     float sma(const std::vector<Bar> &series, std::vector<Bar>::const_iterator end, int length = 1) {
+        //todo: error if length > begin + end
         if (length == 1) return end->close;  //moving average of length 1 always same as original price
 
         float sum = 0;
