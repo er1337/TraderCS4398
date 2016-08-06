@@ -213,6 +213,7 @@ int main() {
                       cout << "Please fix the aforementioned deficiencies before attempting to execute a strategy." << endl
                            << "Press any character on your keyboard and press enter/return to go back to the main menu..." << endl;
                       cin >> garbageQuery;
+                  }
                   break;
             case MAX_OPTIONS:
                   printHeader();
@@ -231,8 +232,7 @@ int main() {
                   }
                   break;  
          } // end switch statement
-      }
-   }while(choice != EXIT_PROG);
+   }while (choice != EXIT_PROG);
    return 0;
 }
 
