@@ -18,6 +18,7 @@ private:
     bool isShort = false;
     float shortEntryPrice = 0;
     float equity;
+    float maxDrawDown;
     vector<Bar> priceSeries;
     vector<signal_t> orderSignals;
 

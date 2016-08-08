@@ -1,11 +1,10 @@
 #include <iostream>
 #include <vector>
 #include "Bar.h"
-#include "smaCross.h"
+#include "strat.h"
 #include "Menus.h"
 #include "processCSV.h"
 #include "StrategyRunner.h"
-#include <fstream>
 #include <cstdlib>
 
 using namespace std;
@@ -22,6 +21,24 @@ int main() {
         std::system("title Trader");
     #endif
 
+    vector<Bar> testSeries = {
+            {"1",1,1,1,1,0},
+            {"2",2,2,2,2,0},
+            {"3",3,3,3,3,0},
+            {"4",4,4,4,4,0},
+            {"5",5,5,5,5,0},
+            {"6",6,6,6,6,0},
+            {"7",7,7,7,7,0},
+            {"8",8,8,8,8,0},
+            {"9",9,9,9,9,0},
+            {"10",10,10,10,10,0},
+    };
+
+    vector<signal_t> dbl = strat::doubleEmaCross(testSeries, 3, 5);
+    for(auto i : dbl) cout << i << "\t";
+    cout<<endl;
+    vector<signal_t> asd = strat::doubleSmaCross(testSeries, 3, 5);
+    for(auto i : asd) cout << i << "\t";
 
     bool isAccountLoaded = false,
          isFileLoaded = false,
@@ -122,7 +139,7 @@ int main() {
                        << "2. Double Moving Average Cross" << endl
                        << "INSERT MORE STRATS HERE ..." << endl;
                   cout << "Enter option (#1-2): ";
-                  cin >> stratQuery; //FIXME not being used ...
+                  cin >> stratQuery;
                 
                // FIXME switch statement determining strategy???
                   isStratLoaded = true;
