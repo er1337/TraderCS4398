@@ -49,10 +49,34 @@ TEST_CASE("indicator values"){
             {"9",9,9,9,9,0},
             {"10",10,10,10,10,0},
     };
-    for(auto i : testSeries) cout << i.close;
+
 
     // call sma with (input series, iterator pointing to end of calculation window, sma length)
     // sma length 10 = (1+2+3...+10) / 10 = 5.5
     REQUIRE(indicator::sma(testSeries, testSeries.cbegin()+(10-1), 10) == 5.5);
 
+}
+
+
+
+TEST_CASE("subtract volume") {
+    Stock testVolume;
+    // testing the case that volume is smaller than value, which should return true.
+    testVolume.setVolume(10);
+    REQUIRE(testVolume.subtractVolume(5) == true);
+
+    // testing the case that volume is equal to the value, which should return true.
+    testVolume.setVolume(10);
+    REQUIRE(testVolume.subtractVolume(10) == true);
+
+    // testing the case that volume is larger than value, which should return false.
+    testVolume.setVolume(10);
+    REQUIRE(testVolume.subtractVolume(20) == false);
+}
+
+TEST_CASE("add stock") {
+    Account testAccount;
+    Stock testStock("stock", "symbol", 5);
+    testAccount.addStock(testStock);
+    REQUIRE(testAccount.getStock("symbol") == testStock);
 }
