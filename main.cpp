@@ -1,19 +1,21 @@
 #include <iostream>
 #include <vector>
 #include "Bar.h"
-#include "strat.h"
+#include "smaCross.h"
 #include "Menus.h"
 #include "processCSV.h"
 #include "StrategyRunner.h"
+#include <fstream>
 #include <cstdlib>
+#include <limits>
 
 using namespace std;
 
-const int MAX_OPTIONS = 6,
+const int MAX_OPTIONS = 5,
           EXIT_PROG = -999;
 
 void printHeader();
-void printMainMenu(const bool, const string);
+void printMainMenu(const bool, const string, const bool, Account);
 void clear_console();
 
 int main() {
@@ -21,32 +23,16 @@ int main() {
         std::system("title Trader");
     #endif
 
-    vector<Bar> testSeries = {
-            {"1",1,1,1,1,0},
-            {"2",2,2,2,2,0},
-            {"3",3,3,3,3,0},
-            {"4",4,4,4,4,0},
-            {"5",5,5,5,5,0},
-            {"6",6,6,6,6,0},
-            {"7",7,7,7,7,0},
-            {"8",8,8,8,8,0},
-            {"9",9,9,9,9,0},
-            {"10",10,10,10,10,0},
-    };
+    float initialBal;
 
-    vector<signal_t> dbl = strat::doubleEmaCross(testSeries, 3, 5);
-    for(auto i : dbl) cout << i << "\t";
-    cout<<endl;
-    vector<signal_t> asd = strat::doubleSmaCross(testSeries, 3, 5);
-    for(auto i : asd) cout << i << "\t";
-
-    bool isAccountLoaded = false,
+    bool isAccountDetailsSet = false,
          isFileLoaded = false,
          isStratLoaded = false,
          ignoreFirstRow = true,
          changeParameter = true;
    
-    string inputFile = "file has not been loaded yet!";
+    string inputFile = "file has not been loaded yet!",
+           accountName;
   
     char delimiter = ',',
          query,
@@ -62,11 +48,13 @@ int main() {
     Stock s;
     processCSV parser;
     ifstream fIn;
+    map<string, Stock> m = {{"STOCK", s}};
+    Account account ("not-set", 0, m);
 
     do{
          clear_console();
          printHeader();
-         printMainMenu(isFileLoaded, inputFile);
+         printMainMenu(isFileLoaded, inputFile, isAccountDetailsSet, account);
          cin >> choice;
          clear_console();
 
@@ -125,13 +113,23 @@ int main() {
                   fIn.close();
                   fIn.clear();
                   break;
-            case 2: // Load Account here
-                  isAccountLoaded = true;
+            case 2: // Set account details (name & balance)
+                  printHeader();
+
+                  cout << "~Specify Account Details~" << endl
+                       << "Please specify a name for the account: ";
+                  cin >> accountName;
+                 
+                  cout << "Please set an initial balance for '" << accountName <<"': ";
+                  cin >> initialBal;
+
+                  account.setName(accountName);
+                  account.setBalance(initialBal);
+                  account.set_initBalance(initialBal);
+                  
+                  isAccountDetailsSet = true;
                   break;
-            case 3: // Create Account here
-                  cout << "NEED TO FIX THIS" << endl;
-                  break;
-            case 4: // Setup Strategy
+            case 3: // Setup Strategy
                   printHeader(); 
                   cout << "~Strategy Selection~" << endl
                        << "Select a strategy below:" << endl
@@ -139,7 +137,7 @@ int main() {
                        << "2. Double Moving Average Cross" << endl
                        << "INSERT MORE STRATS HERE ..." << endl;
                   cout << "Enter option (#1-2): ";
-                  cin >> stratQuery;
+                  cin >> stratQuery; //FIXME not being used ...
                 
                // FIXME switch statement determining strategy???
                   isStratLoaded = true;
@@ -186,15 +184,13 @@ int main() {
                      }      
                   }
                   break;
-            case 5: // Start Strategy
+            case 4: // Start Strategy
                   printHeader();
-                  if (isAccountLoaded && isFileLoaded && isStratLoaded){
-                      cout << "Analyzing financial instrument using the selected strategy ..." << endl;
-                      map<string, Stock> m = {{"STOCK", s}};
-                      Account a ("JP Morgan", 1000, m);
+                  if (isAccountDetailsSet && isFileLoaded && isStratLoaded){
+                      cout << "Analyzing " << account.getName() << " using the selected strategy ..." << endl;
                       vector<signal_t> orderSignals = strat::smaCross(series, movingAvgLength);
 
-                      StrategyRunner sr(&a, series, orderSignals, commission);
+                      StrategyRunner sr(&account, series, orderSignals, commission);
                       sr.runStrategy();
 
                       cout << "\nThe financial instrument has been successfully processed via the selected algorithmic trade strategy!" << endl
@@ -219,8 +215,8 @@ int main() {
                          cout << "\t-A CSV file has not been loaded. Please return to the main menu and specify an input/CSV file" << endl;
                       }
 
-                      if (!isAccountLoaded){
-                         cout << "\t-An account has not been loaded. Please return to the main menu and load an account" << endl; 
+                      if (!isAccountDetailsSet){
+                         cout << "\t-Account details have not been specified. Please return to the main menu" << endl; 
                       }
                       
                       if (!isStratLoaded){
@@ -269,7 +265,7 @@ void printHeader()
         << endl;
 }
 
-void printMainMenu(const bool status, const string file)
+void printMainMenu(const bool status, const string file, const bool details, Account acc)
 {
    cout << "~Main Menu~" << endl
         << "Please select an option below:" << endl
@@ -280,11 +276,17 @@ void printMainMenu(const bool status, const string file)
    else{
       cout << "ERROR: " << file << ")" << endl;
    }
-   cout << "2. Load Account" << endl
-        << "3. Create Account" << endl
-        << "4. Setup Strategy" << endl
-        << "5. Start Strategy" << endl
-        << "6. Exit Algo-Trade System" << endl
+   cout << "2. Set Account Details ";
+   if (details){
+      cout << "(" << acc.getName() << " has a balance of $" << acc.getBalance() << ")" << endl;
+   }
+   else{
+      cout << "(ERROR: account set up has not been completed!)" << endl;
+   }
+
+   cout << "3. Setup Strategy" << endl
+        << "4. Start Strategy" << endl
+        << "5. Exit Algo-Trade System" << endl
         << "Enter (#1-" << MAX_OPTIONS << "): ";
 }
 
