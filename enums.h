@@ -9,6 +9,6 @@ enum signal_t {
 };
 
 enum menuAction_t{
-    runStrategy
+    nothing, runStrategy
 };
 #endif //TRADERCS4398_SIGNAL_T_H
