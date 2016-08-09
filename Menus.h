@@ -5,9 +5,11 @@
 #ifndef TRADERCS4398_MENUS_H
 #define TRADERCS4398_MENUS_H
 
+#include <fstream>
 #include <iostream>
 #include <cstdlib>
 #include "enums.h"
+
 using std::cout; using std::endl; using std::cin; using std::string;
 
 //todo: implement back menu choices
@@ -71,14 +73,32 @@ public:
         }
         return in;
     }
+void printHeader()
+{
+   cout << " $$$$$$\\ $$\\                      $$$$$$$$\\                    $$\\                 $$$$$$\\                     $$\\                                  " << endl
+        << "$$  __$$\\$$ |                     \\__$$  __|                   $$ |               $$  __$$\\                    $$ |                                    " << endl 
+        << "$$ /  $$ $$ |$$$$$$\\  $$$$$$\\        $$ |$$$$$$\\ $$$$$$\\  $$$$$$$ |$$$$$$\\        $$ /  \\__$$\\   $$\\ $$$$$$$\\$$$$$$\\   $$$$$$\\ $$$$$$\\$$$$\\  " << endl
+        << "$$$$$$$$ $$ $$  __$$\\$$  __$$\\$$$$$$\\$$ $$  __$$\\\\____$$\\$$  __$$ $$  __$$\\       \\$$$$$$\\ $$ |  $$ $$  _____\\_$$  _| $$  __$$\\$$  _$$  _$$\\  " << endl
+        << "$$  __$$ $$ $$ /  $$ $$ /  $$ \\______$$ $$ |  \\__$$$$$$$ $$ /  $$ $$$$$$$$ |       \\____$$\\$$ |  $$ \\$$$$$$\\   $$ |   $$$$$$$$ $$ / $$ / $$ |       " << endl
+        << "$$ |  $$ $$ $$ |  $$ $$ |  $$ |      $$ $$ |    $$  __$$ $$ |  $$ $$   ____|      $$\\   $$ $$ |  $$ |\\____$$\\  $$ |$$\\$$   ____$$ | $$ | $$ |         " << endl
+        << "$$ |  $$ $$ \\$$$$$$$ \\$$$$$$  |      $$ $$ |    \\$$$$$$$ \\$$$$$$$ \\$$$$$$$\\       \\$$$$$$  \\$$$$$$$ $$$$$$$  | \\$$$$  \\$$$$$$$\\$$ | $$ | $$ |  " << endl
+        << "\\__|  \\__\\__|\\____$$ |\\______/       \\__\\__|     \\_______|\\_______|\\_______|       \\______/ \\____$$ \\_______/  \\____/ \\_______\\__| \\__| \\__| " << endl
+        << "            $$\\   $$ |                                                                     $$\\   $$ |                                       " << endl 
+        << "            \\$$$$$$  |                                                                     \\$$$$$$  |                                        " << endl
+        << "             \\______/                                                                       \\______/                                         " << endl
+        << endl;
+}
+
     void printMenuInputFile(){
-        cout << TITLE << endl;
+      //  cout << TITLE << endl;
+        printHeader();
         cout << "Load input CSV file"   << endl;
         cout << "Name of input file"  << endl;
         cout << endl;
     }
     void printMenuStrategy(){
-        cout << TITLE << endl;
+      //  cout << TITLE << endl;
+        printHeader();
         cout << "Select strategy to use"         << endl;
         cout << "1. Price Cross Moving Average"  << endl;
         cout << "2. Double Moving Average Cross" << endl;
@@ -89,7 +109,8 @@ public:
         cout << endl;
     }
     void printMenuStrategyParamters(){
-        cout << TITLE << endl;
+   //     cout << TITLE << endl;
+        printHeader();
         cout << "Configure Strategy Parameters"         << endl;
         cout << "1. Moving average Length (current="<<movingAverageLength<<")" << endl;
         cout << "2. Commission for orders (current=$"<<strategyMenuCommission<<")" << endl;
@@ -99,12 +120,15 @@ public:
         cout << endl;
     }
     void printMenuMain(){
-        cout << TITLE << endl;
+      //  cout << TITLE << endl;
+        printHeader();
         cout << "Select an option."     << endl;
-        if(fileLoaded)
-            cout << "1. Set input file (File Loaded)" << endl;
-        else
-            cout << "1. Set input file" << endl;
+        if(fileLoaded){
+            cout << "1. Set input file (File successfully loaded)" << endl;
+        }
+        else{
+            cout << "1. Set input file (Input file not specified OR file failed to load)" << endl; 
+        }
         cout << "2. Load account"       << endl;
         cout << "3. Create new account" << endl;
         if(accountLoaded && fileLoaded)
@@ -116,7 +140,8 @@ public:
     }
     void printMenuLoadAccount(){
         // need to pass in account list loaded from file beforehand.
-        cout << TITLE << endl;
+    //    cout << TITLE << endl;
+        printHeader();
         cout << "Select an option."     << endl;
         cout << "1. Account 1, etc etc" << endl;
         cout << "0. Back"               << endl;
@@ -161,7 +186,6 @@ public:
         }
     }
 
-
     void runSubmenuInputFile(){
         printMenuInputFile();
         infile = getInput<std::string>();
@@ -184,7 +208,20 @@ public:
                 ignoreHeader = false;
         }
         clear_screen();
-        fileLoaded = true;
+        
+        std::fstream fIn;
+        fIn.open(infile);
+
+        if (!fIn){
+           fileLoaded = false;
+           fIn.close();
+           fIn.clear();
+        }
+        else{
+           fileLoaded = true;
+           fIn.close();
+           fIn.clear();
+        }
     }
     void runSubmenuSelectStrategy(){
         printMenuStrategy();
@@ -215,7 +252,5 @@ public:
         printMenuStrategyParamters();
 
     }
-
-
 };
 #endif //TRADERCS4398_MENUS_H

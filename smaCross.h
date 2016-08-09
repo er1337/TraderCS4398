@@ -34,6 +34,7 @@ namespace strat {
 		//can use auto?
 
         vector<signal_t> signals; //will hold series of corresponding trade signals for input series
+        signals.reserve(series.size()+1);
 
         for(auto i=series.begin(); i != series.end(); ++i) {
             if (i - series.begin() < longestLength) signals.push_back(ERR);
@@ -42,7 +43,6 @@ namespace strat {
                 if (i->close > sma) signals.push_back(BUY);
                 else if (i->close < sma) signals.push_back(SELL);
                 else signals.push_back(HOLD);
-                // may be faster to initially set size instead of pushing each one
             }
         }
         return signals;

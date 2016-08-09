@@ -18,6 +18,7 @@ private:
     bool isShort = false;
     float shortEntryPrice = 0;
     float equity;
+    float maxDrawDown;
     vector<Bar> priceSeries;
     vector<signal_t> orderSignals;
 
@@ -25,6 +26,21 @@ private:
 public:
     StrategyRunner(Account* a, const vector<Bar> ps, const vector<signal_t> os, const float fee):
             account(*a), priceSeries(ps), orderSignals(os), commission(fee) {}
+
+    float getEquity() const {
+        return equity;
+    }
+    int getNumShares() const {
+        return numShares;
+    }
+    void setAccount(const Account &a) {
+        StrategyRunner::account = a;
+        // or use this->account = a ?
+    }
+
+    void setCommission(float commission) {
+        StrategyRunner::commission = commission;
+    }
 
     //todo: make it work better with Account class and Stock class
     void marketOrder(signal_t signal, float orderPrice){
@@ -67,14 +83,7 @@ public:
         else {} //ERR
 
     }
-    void setAccount(const Account &a) {
-        StrategyRunner::account = a;
-        // or use this->account = a ?
-    }
 
-    void setCommission(float commission) {
-        StrategyRunner::commission = commission;
-    }
     void runStrategy(){
         equity = account.getBalance();
         if(priceSeries.size() != orderSignals.size())
@@ -99,7 +108,7 @@ public:
 //            numShares = 0;
 //            account.setBalance(account.getBalance() + shortTotal);
 //        }
-
+        //todo: separate print function
         cout << "\n\n===============================" <<endl;
         cout << "Initial Balance: "<< account.getInitBalance() <<endl;
         cout << "Final Balance: "<< account.getBalance() <<endl;
