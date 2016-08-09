@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <cstdlib>
 #include "Bar.h"
 #include "smaCross.h"
 #include "emaCross.h"
@@ -8,9 +10,6 @@
 #include "Menus.h"
 #include "processCSV.h"
 #include "StrategyRunner.h"
-#include <fstream>
-#include <cstdlib>
-#include <limits>
 
 using namespace std;
 
@@ -53,7 +52,8 @@ int main() {
         commission = 0,
         currentStrat = 0; // 0 = no valid strategy chosen
 
-    unsigned fastLen = 1, slowLen = 2;  // FIXME               
+    unsigned fastLen = 1, 
+             slowLen = 2;             
   
     vector<Bar> series;
     Stock s;
@@ -131,7 +131,7 @@ int main() {
                   cout << "~Specify Account Details~" << endl
                        << "Please specify a name for the account: ";
                   cin >> accountName;
-                 
+                                 
                   cout << "Please set an initial balance for '" << accountName <<"': ";
                   cin >> initialBal;
 
@@ -175,10 +175,12 @@ int main() {
                   printHeader(); 
                   while (changeParameter){
                      cout << "\n~Configure Strategy Parameters~" << endl
-                          << "1. Moving Average Length (current = "<< movingAvgLength << ")" << endl
+                          << "1. Moving Average Length (current = "<< movingAvgLength << ") -- applicable to SMA- & EMA-cross" << endl
                           << "2. Order Commission (current = $" << commission << ")" << endl
-                          << "3. Return to Main Menu (accept current parameters)" << endl;
-                     cout << "Enter option (#1-3): "; 
+                          << "3. Adjust Slow Moving Average Length (current = \'" << slowLen << "\') -- applicable to double SMA- & EMA-cross" << endl
+                          << "4. Adjust Fast Moving Average Length (current = \'" << fastLen << "\') -- applicable to double SMA- & EMA-cross" << endl
+                          << "5. Return to Main Menu (accept current parameters)" << endl;
+                     cout << "Enter option (#1-5): "; 
                     
                      cin >> stratQuery;
                      switch(stratQuery){
@@ -186,6 +188,8 @@ int main() {
                               cout << "\nEnter a new value for the moving average length: ";
                               cin >> movingAvgLength;
                               cout << "Moving Average Length has been changed to " << movingAvgLength << endl;
+                              currentStrat == SIMPLE_MOVING_AVG ? orderSignals = strat::smaCross(series, movingAvgLength) :
+                                 orderSignals = strat::emaCross(series, movingAvgLength);
                               break;
                         case 2:
                               cout << "\nEnter new value for order commission: ";
@@ -193,6 +197,21 @@ int main() {
                               cout << "Order commission has been changed to $" << commission << endl;
                               break;
                         case 3:
+                              cout << "\nEnter new value for slow moving average length: ";
+                              cin >> slowLen;
+                              cout << "Slow moving average has been changed to " << slowLen << endl;
+                              currentStrat == DOUBLE_MOVING_AVG ? orderSignals = strat::doubleSmaCross(series, fastLen, slowLen) :
+                                 orderSignals = strat::doubleEmaCross(series, fastLen, slowLen);
+                              break;
+                        case 4:
+                               cout << "\nEnter new value for fast moving average length: ";
+                               cin >> fastLen;
+                               cout << "Fast moving average has been changed to " << fastLen << endl;
+                               currentStrat == DOUBLE_MOVING_AVG ? orderSignals = strat::doubleSmaCross(series, fastLen, slowLen) :
+                                  orderSignals = strat::doubleEmaCross(series, fastLen, slowLen);
+                              break;
+                        case 5:
+                        default:
                               changeParameter = false;
                               break;
                      }
