@@ -298,20 +298,13 @@ void printMainMenu(const bool status, const string file, const bool details, Acc
    cout << "~Main Menu~" << endl
         << "Please select an option below:" << endl
         << "1. Specify Input File (";
-   if (status){
-      cout << "Successfully loaded: " << file << ")" << endl;
-   }
-   else{
-      cout << "ERROR: " << file << ")" << endl;
-   }
+   status ? 
+     cout << "Successfully loaded: " << file << ")" << endl : 
+     cout << "ERROR: " << file << ")" << endl;
    cout << "2. Set Account Details ";
-   if (details){
-      cout << "(" << acc.getName() << " has a balance of $" << acc.getBalance() << ")" << endl;
-   }
-   else{
-      cout << "(ERROR: account set up has not been completed!)" << endl;
-   }
-
+   details ? 
+     cout << "(\'" << acc.getName() << "\' has a balance of $" << acc.getBalance() << ")" << endl : 
+     cout << "(ERROR: account set up has not been completed!)" << endl;
    cout << "3. Setup Strategy ";
    if (strat == STRAT_NOT_SEL){
       cout << "(ERROR: strategy has not been selected)" << endl;
