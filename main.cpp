@@ -2,6 +2,9 @@
 #include <vector>
 #include "Bar.h"
 #include "smaCross.h"
+#include "emaCross.h"
+#include "doubleEmaCross.h"
+#include "doubleSmaCross.h"
 #include "Menus.h"
 #include "processCSV.h"
 #include "StrategyRunner.h"
@@ -12,10 +15,15 @@
 using namespace std;
 
 const int MAX_OPTIONS = 5,
-          EXIT_PROG = -999;
+          EXIT_PROG = -999,
+          STRAT_NOT_SEL = 0,
+          SIMPLE_MOVING_AVG = 1,
+          DOUBLE_MOVING_AVG = 2,
+          DOUBLE_EXP_MOVING_AVG = 3,
+          EXP_MOVING_AVG = 4;
 
 void printHeader();
-void printMainMenu(const bool, const string, const bool, Account);
+void printMainMenu(const bool, const string, const bool, Account, const int);
 void clear_console();
 
 int main() {
@@ -42,7 +50,10 @@ int main() {
     int choice,
         stratQuery,
         movingAvgLength = 25,
-        commission = 0;
+        commission = 0,
+        currentStrat = 0; // 0 = no valid strategy chosen
+
+    unsigned fastLen = 1, slowLen = 2;  // FIXME               
   
     vector<Bar> series;
     Stock s;
@@ -50,11 +61,12 @@ int main() {
     ifstream fIn;
     map<string, Stock> m = {{"STOCK", s}};
     Account account ("not-set", 0, m);
+    vector<signal_t> orderSignals;
 
     do{
          clear_console();
          printHeader();
-         printMainMenu(isFileLoaded, inputFile, isAccountDetailsSet, account);
+         printMainMenu(isFileLoaded, inputFile, isAccountDetailsSet, account, currentStrat);
          cin >> choice;
          clear_console();
 
@@ -133,13 +145,30 @@ int main() {
                   printHeader(); 
                   cout << "~Strategy Selection~" << endl
                        << "Select a strategy below:" << endl
-                       << "1. Price Cross Moving Average" << endl
+                       << "1. Simple Moving Average Cross" << endl
                        << "2. Double Moving Average Cross" << endl
-                       << "INSERT MORE STRATS HERE ..." << endl;
-                  cout << "Enter option (#1-2): ";
-                  cin >> stratQuery; //FIXME not being used ...
-                
-               // FIXME switch statement determining strategy???
+                       << "3. Double Exponential Moving Average Cross" << endl
+                       << "4. Exponential Moving Average Cross" << endl;
+                  cout << "Enter option (#1-4): ";
+                  cin >> stratQuery;
+                  switch(stratQuery){
+                     case 1:
+                           orderSignals = strat::smaCross(series, movingAvgLength);
+                           currentStrat = SIMPLE_MOVING_AVG;
+                           break;
+                     case 2:
+                           orderSignals = strat::doubleSmaCross(series, fastLen, slowLen);
+                           currentStrat = DOUBLE_MOVING_AVG;
+                           break;
+                     case 3:
+                           orderSignals = strat::doubleEmaCross(series, fastLen, slowLen);
+                           currentStrat = DOUBLE_EXP_MOVING_AVG;
+                           break;
+                     case 4:
+                           orderSignals = strat::emaCross(series, movingAvgLength);
+                           currentStrat = EXP_MOVING_AVG;
+                           break;
+                  }
                   isStratLoaded = true;
                   changeParameter = true;
                   clear_console();
@@ -188,7 +217,6 @@ int main() {
                   printHeader();
                   if (isAccountDetailsSet && isFileLoaded && isStratLoaded){
                       cout << "Analyzing " << account.getName() << " using the selected strategy ..." << endl;
-                      vector<signal_t> orderSignals = strat::smaCross(series, movingAvgLength);
 
                       StrategyRunner sr(&account, series, orderSignals, commission);
                       sr.runStrategy();
@@ -265,7 +293,7 @@ void printHeader()
         << endl;
 }
 
-void printMainMenu(const bool status, const string file, const bool details, Account acc)
+void printMainMenu(const bool status, const string file, const bool details, Account acc, const int strat)
 {
    cout << "~Main Menu~" << endl
         << "Please select an option below:" << endl
@@ -284,8 +312,26 @@ void printMainMenu(const bool status, const string file, const bool details, Acc
       cout << "(ERROR: account set up has not been completed!)" << endl;
    }
 
-   cout << "3. Setup Strategy" << endl
-        << "4. Start Strategy" << endl
+   cout << "3. Setup Strategy ";
+   if (strat == STRAT_NOT_SEL){
+      cout << "(ERROR: strategy has not been selected)" << endl;
+   }
+   else if (strat == SIMPLE_MOVING_AVG){
+      cout << "(Strategy: \'Simple Moving Average\')" << endl;
+   }
+   else if (strat == DOUBLE_MOVING_AVG){
+      cout << "(Strategy: \'Double Moving Average\')" << endl;
+   }
+   else if (strat == DOUBLE_EXP_MOVING_AVG){
+      cout << "(Strategy: \'Double Exponential Moving Average\')" << endl;
+   }
+   else if (strat == EXP_MOVING_AVG){
+      cout << "(Strategy: \'Exponential Moving Average\')" << endl;
+   }
+   else{
+     cout << "(ERROR: strategy has not been selected)" << endl;
+   }
+   cout << "4. Start Strategy" << endl
         << "5. Exit Algo-Trade System" << endl
         << "Enter (#1-" << MAX_OPTIONS << "): ";
 }
