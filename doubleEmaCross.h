@@ -31,9 +31,8 @@ namespace strat {
         assert(slowEma.size() == fastEma.size());
         assert(slowEma.size() == source.size());
 
-        for(int i=0; i<longestLength-1; ++i){ signals.push_back(ERR); std::cout<<"err ";}
+        for(int i=0; i<longestLength-1; ++i) signals.push_back(ERR);
         for(int i = longestLength-1; i<source.size(); ++i){
-            std::cout<<"fast="<<fastEma[i]<<"\tslow="<<slowEma[i]<<'\n';
             if(fastEma[i]==-1 || slowEma[i]==-1) exit(-1);
             if(fastEma.at(i) > slowEma.at(i)) signals.push_back(BUY);
             else if(fastEma.at(i) < slowEma.at(i)) signals.push_back(SELL);

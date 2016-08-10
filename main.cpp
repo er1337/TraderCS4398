@@ -1,15 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <cstdlib>
 #include "Bar.h"
-#include "smaCross.h"
-#include "emaCross.h"
-#include "doubleEmaCross.h"
-#include "doubleSmaCross.h"
+#include "strat.h"
 #include "Menus.h"
 #include "processCSV.h"
 #include "StrategyRunner.h"
+#include "parameterOptimize.h"
 
 using namespace std;
 
@@ -30,14 +27,14 @@ int main() {
         std::system("title Trader");
     #endif
 
-    float initialBal;
+    float initialBal, commission=0;
 
     bool isAccountDetailsSet = false,
          isFileLoaded = false,
          isStratLoaded = false,
          ignoreFirstRow = true,
          changeParameter = true;
-   
+
     string inputFile = "file has not been loaded yet!",
            accountName;
   
@@ -48,8 +45,8 @@ int main() {
   
     int choice,
         stratQuery,
+        paramQuery,
         movingAvgLength = 25,
-        commission = 0,
         currentStrat = 0; // 0 = no valid strategy chosen
 
     unsigned fastLen = 1, 
@@ -77,6 +74,10 @@ int main() {
                        << "Please specify the name of the input file: ";
                   cin >> inputFile;
                   fIn.open(inputFile);
+                  if(!fIn) {
+                      inputFile = inputFile + ".csv";
+                      fIn.open(inputFile);
+                  } //maybe they forgot extension
                   
                   while (!fIn){
                      cout << "Unable to open " << inputFile << endl
@@ -85,7 +86,7 @@ int main() {
                                  
                      fIn.open(inputFile);
                   }
- 
+
                   parser.setPath(inputFile);
 
                   cout << "\nDefault delimiter == '" << delimiter << "': do you want to change the delimiter?" << endl
@@ -151,30 +152,33 @@ int main() {
                        << "4. Exponential Moving Average Cross" << endl;
                   cout << "Enter option (#1-4): ";
                   cin >> stratQuery;
-                  switch(stratQuery){
+                 switch (stratQuery) {
                      case 1:
-                           orderSignals = strat::smaCross(series, movingAvgLength);
-                           currentStrat = SIMPLE_MOVING_AVG;
-                           break;
+                         orderSignals = strat::smaCross(series, movingAvgLength);
+                         currentStrat = SIMPLE_MOVING_AVG;
+                         break;
                      case 2:
-                           orderSignals = strat::doubleSmaCross(series, fastLen, slowLen);
-                           currentStrat = DOUBLE_MOVING_AVG;
-                           break;
+                         orderSignals = strat::doubleSmaCross(series, fastLen, slowLen);
+                         currentStrat = DOUBLE_MOVING_AVG;
+                         break;
                      case 3:
-                           orderSignals = strat::doubleEmaCross(series, fastLen, slowLen);
-                           currentStrat = DOUBLE_EXP_MOVING_AVG;
-                           break;
+                         orderSignals = strat::doubleEmaCross(series, fastLen, slowLen);
+                         currentStrat = DOUBLE_EXP_MOVING_AVG;
+                         break;
                      case 4:
-                           orderSignals = strat::emaCross(series, movingAvgLength);
-                           currentStrat = EXP_MOVING_AVG;
-                           break;
-                  }
+                         orderSignals = strat::emaCross(series, movingAvgLength);
+                         currentStrat = EXP_MOVING_AVG;
+                         break;
+                     default:
+                         exit(-1);
+                 }
+
                   isStratLoaded = true;
                   changeParameter = true;
-                  clear_console();
-                  printHeader(); 
                   while (changeParameter){
-                     cout << "\n~Configure Strategy Parameters~" << endl
+                      clear_console();
+                      printHeader();
+                      cout << "\n~Configure Strategy Parameters~" << endl
                           << "1. Moving Average Length (current = "<< movingAvgLength << ") -- applicable to SMA- & EMA-cross" << endl
                           << "2. Order Commission (current = $" << commission << ")" << endl
                           << "3. Adjust Slow Moving Average Length (current = \'" << slowLen << "\') -- applicable to double SMA- & EMA-cross" << endl
@@ -182,8 +186,8 @@ int main() {
                           << "5. Return to Main Menu (accept current parameters)" << endl;
                      cout << "Enter option (#1-5): "; 
                     
-                     cin >> stratQuery;
-                     switch(stratQuery){
+                     cin >> paramQuery;
+                     switch(paramQuery){
                         case 1:
                               cout << "\nEnter a new value for the moving average length: ";
                               cin >> movingAvgLength;
@@ -229,7 +233,7 @@ int main() {
                                    changeParameter = false;
                                    break;
                         }
-                     }      
+                     }
                   }
                   break;
             case 4: // Start Strategy
@@ -237,7 +241,7 @@ int main() {
                   if (isAccountDetailsSet && isFileLoaded && isStratLoaded){
                       cout << "Analyzing " << account.getName() << " using the selected strategy ..." << endl;
 
-                      StrategyRunner sr(&account, series, orderSignals, commission);
+                      StrategyRunner sr(account, series, orderSignals, commission);
                       sr.runStrategy();
 
                       cout << "\nThe financial instrument has been successfully processed via the selected algorithmic trade strategy!" << endl
@@ -275,6 +279,10 @@ int main() {
                       cin >> garbageQuery;
                   }
                   break;
+             case 6:
+                 parameterOptimize(account, series, commission);
+                 cin >> garbageQuery;
+                 break;
             case MAX_OPTIONS:
                   printHeader();
                   cout << "Are you sure you want to exit?" << endl
@@ -345,6 +353,7 @@ void printMainMenu(const bool status, const string file, const bool details, Acc
    }
    cout << "4. Start Strategy" << endl
         << "5. Exit Algo-Trade System" << endl
+        << "6. Parameter optimizur"   << endl
         << "Enter (#1-" << MAX_OPTIONS << "): ";
 }
 

@@ -157,7 +157,7 @@ TEST_CASE("market order") {
     float balance = 100;
     float junk = 0;
     testAccount.setBalance(balance);
-    StrategyRunner testRunner(&testAccount, testBar, testSignal, junk);
+    StrategyRunner testRunner(testAccount, testBar, testSignal, junk);
 
 
     // buy case
