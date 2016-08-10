@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const int MAX_OPTIONS = 5,
+const int MAX_OPTIONS = 6,
           EXIT_PROG = -999,
           STRAT_NOT_SEL = 0,
           SIMPLE_MOVING_AVG = 1,
@@ -279,7 +279,7 @@ int main() {
                       cin >> garbageQuery;
                   }
                   break;
-             case 6:
+             case 5:
                  parameterOptimize(account, series, commission);
                  cin >> garbageQuery;
                  break;
@@ -352,8 +352,8 @@ void printMainMenu(const bool status, const string file, const bool details, Acc
      cout << "(ERROR: strategy has not been selected)" << endl;
    }
    cout << "4. Start Strategy" << endl
-        << "5. Exit Algo-Trade System" << endl
-        << "6. Parameter optimizur"   << endl
+        << "5. Parameter Optimizer"   << endl
+        << "6. Exit Algo-Trade System" << endl
         << "Enter (#1-" << MAX_OPTIONS << "): ";
 }
 
