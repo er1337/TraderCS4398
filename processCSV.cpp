@@ -49,6 +49,7 @@ void processCSV::setPath(std::string path)
 {
    this->path = path;
 }
+std::string processCSV::getPath(){return path;}
 
 // setDelimiter: this is a setter which is able to modifies the class's
 //               delimiter. The default value is the comma (',')

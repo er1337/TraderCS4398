@@ -30,8 +30,11 @@ class processCSV{
    public:
       processCSV();
       void setIgnoreHeader(bool ignore);
+      bool getIgnoreHeader(){return ignore;}
       void setPath(std::string path);
+      std::string getPath();
       void setDelimiter(char delimiter);
+      char getDelimiter(){return delimiter;}
       std::string const& operator[](std::size_t index) const;
       std::size_t size() const;
       void readNextRow(std::istream& str);
