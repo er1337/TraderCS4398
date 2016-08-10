@@ -1,19 +1,28 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <cstdlib>
 #include "Bar.h"
-#include "strat.h"
+#include "smaCross.h"
+#include "emaCross.h"
+#include "doubleEmaCross.h"
+#include "doubleSmaCross.h"
 #include "Menus.h"
 #include "processCSV.h"
 #include "StrategyRunner.h"
-#include <cstdlib>
 
 using namespace std;
 
-const int MAX_OPTIONS = 6,
-          EXIT_PROG = -999;
+const int MAX_OPTIONS = 5,
+          EXIT_PROG = -999,
+          STRAT_NOT_SEL = 0,
+          SIMPLE_MOVING_AVG = 1,
+          DOUBLE_MOVING_AVG = 2,
+          DOUBLE_EXP_MOVING_AVG = 3,
+          EXP_MOVING_AVG = 4;
 
 void printHeader();
-void printMainMenu(const bool, const string);
+void printMainMenu(const bool, const string, const bool, Account, const int);
 void clear_console();
 
 int main() {
@@ -21,32 +30,16 @@ int main() {
         std::system("title Trader");
     #endif
 
-    vector<Bar> testSeries = {
-            {"1",1,1,1,1,0},
-            {"2",2,2,2,2,0},
-            {"3",3,3,3,3,0},
-            {"4",4,4,4,4,0},
-            {"5",5,5,5,5,0},
-            {"6",6,6,6,6,0},
-            {"7",7,7,7,7,0},
-            {"8",8,8,8,8,0},
-            {"9",9,9,9,9,0},
-            {"10",10,10,10,10,0},
-    };
+    float initialBal;
 
-    vector<signal_t> dbl = strat::doubleEmaCross(testSeries, 3, 5);
-    for(auto i : dbl) cout << i << "\t";
-    cout<<endl;
-    vector<signal_t> asd = strat::doubleSmaCross(testSeries, 3, 5);
-    for(auto i : asd) cout << i << "\t";
-
-    bool isAccountLoaded = false,
+    bool isAccountDetailsSet = false,
          isFileLoaded = false,
          isStratLoaded = false,
          ignoreFirstRow = true,
          changeParameter = true;
    
-    string inputFile = "file has not been loaded yet!";
+    string inputFile = "file has not been loaded yet!",
+           accountName;
   
     char delimiter = ',',
          query,
@@ -56,17 +49,24 @@ int main() {
     int choice,
         stratQuery,
         movingAvgLength = 25,
-        commission = 0;
+        commission = 0,
+        currentStrat = 0; // 0 = no valid strategy chosen
+
+    unsigned fastLen = 1, 
+             slowLen = 2;             
   
     vector<Bar> series;
     Stock s;
     processCSV parser;
     ifstream fIn;
+    map<string, Stock> m = {{"STOCK", s}};
+    Account account ("not-set", 0, m);
+    vector<signal_t> orderSignals;
 
     do{
          clear_console();
          printHeader();
-         printMainMenu(isFileLoaded, inputFile);
+         printMainMenu(isFileLoaded, inputFile, isAccountDetailsSet, account, currentStrat);
          cin >> choice;
          clear_console();
 
@@ -125,33 +125,62 @@ int main() {
                   fIn.close();
                   fIn.clear();
                   break;
-            case 2: // Load Account here
-                  isAccountLoaded = true;
+            case 2: // Set account details (name & balance)
+                  printHeader();
+
+                  cout << "~Specify Account Details~" << endl
+                       << "Please specify a name for the account: ";
+                  cin >> accountName;
+                                 
+                  cout << "Please set an initial balance for '" << accountName <<"': ";
+                  cin >> initialBal;
+
+                  account.setName(accountName);
+                  account.setBalance(initialBal);
+                  account.set_initBalance(initialBal);
+                  
+                  isAccountDetailsSet = true;
                   break;
-            case 3: // Create Account here
-                  cout << "NEED TO FIX THIS" << endl;
-                  break;
-            case 4: // Setup Strategy
+            case 3: // Setup Strategy
                   printHeader(); 
                   cout << "~Strategy Selection~" << endl
                        << "Select a strategy below:" << endl
-                       << "1. Price Cross Moving Average" << endl
+                       << "1. Simple Moving Average Cross" << endl
                        << "2. Double Moving Average Cross" << endl
-                       << "INSERT MORE STRATS HERE ..." << endl;
-                  cout << "Enter option (#1-2): ";
+                       << "3. Double Exponential Moving Average Cross" << endl
+                       << "4. Exponential Moving Average Cross" << endl;
+                  cout << "Enter option (#1-4): ";
                   cin >> stratQuery;
-                
-               // FIXME switch statement determining strategy???
+                  switch(stratQuery){
+                     case 1:
+                           orderSignals = strat::smaCross(series, movingAvgLength);
+                           currentStrat = SIMPLE_MOVING_AVG;
+                           break;
+                     case 2:
+                           orderSignals = strat::doubleSmaCross(series, fastLen, slowLen);
+                           currentStrat = DOUBLE_MOVING_AVG;
+                           break;
+                     case 3:
+                           orderSignals = strat::doubleEmaCross(series, fastLen, slowLen);
+                           currentStrat = DOUBLE_EXP_MOVING_AVG;
+                           break;
+                     case 4:
+                           orderSignals = strat::emaCross(series, movingAvgLength);
+                           currentStrat = EXP_MOVING_AVG;
+                           break;
+                  }
                   isStratLoaded = true;
                   changeParameter = true;
                   clear_console();
                   printHeader(); 
                   while (changeParameter){
                      cout << "\n~Configure Strategy Parameters~" << endl
-                          << "1. Moving Average Length (current = "<< movingAvgLength << ")" << endl
+                          << "1. Moving Average Length (current = "<< movingAvgLength << ") -- applicable to SMA- & EMA-cross" << endl
                           << "2. Order Commission (current = $" << commission << ")" << endl
-                          << "3. Return to Main Menu (accept current parameters)" << endl;
-                     cout << "Enter option (#1-3): "; 
+                          << "3. Adjust Slow Moving Average Length (current = \'" << slowLen << "\') -- applicable to double SMA- & EMA-cross" << endl
+                          << "4. Adjust Fast Moving Average Length (current = \'" << fastLen << "\') -- applicable to double SMA- & EMA-cross" << endl
+                          << "5. Return to Main Menu (accept current parameters)" << endl;
+                     cout << "Enter option (#1-5): "; 
                     
                      cin >> stratQuery;
                      switch(stratQuery){
@@ -159,6 +188,8 @@ int main() {
                               cout << "\nEnter a new value for the moving average length: ";
                               cin >> movingAvgLength;
                               cout << "Moving Average Length has been changed to " << movingAvgLength << endl;
+                              currentStrat == SIMPLE_MOVING_AVG ? orderSignals = strat::smaCross(series, movingAvgLength) :
+                                 orderSignals = strat::emaCross(series, movingAvgLength);
                               break;
                         case 2:
                               cout << "\nEnter new value for order commission: ";
@@ -166,6 +197,21 @@ int main() {
                               cout << "Order commission has been changed to $" << commission << endl;
                               break;
                         case 3:
+                              cout << "\nEnter new value for slow moving average length: ";
+                              cin >> slowLen;
+                              cout << "Slow moving average has been changed to " << slowLen << endl;
+                              currentStrat == DOUBLE_MOVING_AVG ? orderSignals = strat::doubleSmaCross(series, fastLen, slowLen) :
+                                 orderSignals = strat::doubleEmaCross(series, fastLen, slowLen);
+                              break;
+                        case 4:
+                               cout << "\nEnter new value for fast moving average length: ";
+                               cin >> fastLen;
+                               cout << "Fast moving average has been changed to " << fastLen << endl;
+                               currentStrat == DOUBLE_MOVING_AVG ? orderSignals = strat::doubleSmaCross(series, fastLen, slowLen) :
+                                  orderSignals = strat::doubleEmaCross(series, fastLen, slowLen);
+                              break;
+                        case 5:
+                        default:
                               changeParameter = false;
                               break;
                      }
@@ -186,15 +232,12 @@ int main() {
                      }      
                   }
                   break;
-            case 5: // Start Strategy
+            case 4: // Start Strategy
                   printHeader();
-                  if (isAccountLoaded && isFileLoaded && isStratLoaded){
-                      cout << "Analyzing financial instrument using the selected strategy ..." << endl;
-                      map<string, Stock> m = {{"STOCK", s}};
-                      Account a ("JP Morgan", 1000, m);
-                      vector<signal_t> orderSignals = strat::smaCross(series, movingAvgLength);
+                  if (isAccountDetailsSet && isFileLoaded && isStratLoaded){
+                      cout << "Analyzing " << account.getName() << " using the selected strategy ..." << endl;
 
-                      StrategyRunner sr(&a, series, orderSignals, commission);
+                      StrategyRunner sr(&account, series, orderSignals, commission);
                       sr.runStrategy();
 
                       cout << "\nThe financial instrument has been successfully processed via the selected algorithmic trade strategy!" << endl
@@ -219,8 +262,8 @@ int main() {
                          cout << "\t-A CSV file has not been loaded. Please return to the main menu and specify an input/CSV file" << endl;
                       }
 
-                      if (!isAccountLoaded){
-                         cout << "\t-An account has not been loaded. Please return to the main menu and load an account" << endl; 
+                      if (!isAccountDetailsSet){
+                         cout << "\t-Account details have not been specified. Please return to the main menu" << endl; 
                       }
                       
                       if (!isStratLoaded){
@@ -269,22 +312,39 @@ void printHeader()
         << endl;
 }
 
-void printMainMenu(const bool status, const string file)
+void printMainMenu(const bool status, const string file, const bool details, Account acc, const int strat)
 {
    cout << "~Main Menu~" << endl
         << "Please select an option below:" << endl
         << "1. Specify Input File (";
-   if (status){
-      cout << "Successfully loaded: " << file << ")" << endl;
+   status ? 
+     cout << "Successfully loaded: " << file << ")" << endl : 
+     cout << "ERROR: " << file << ")" << endl;
+   cout << "2. Set Account Details ";
+   details ? 
+     cout << "(\'" << acc.getName() << "\' has a balance of $" << acc.getBalance() << ")" << endl : 
+     cout << "(ERROR: account set up has not been completed!)" << endl;
+   cout << "3. Setup Strategy ";
+   if (strat == STRAT_NOT_SEL){
+      cout << "(ERROR: strategy has not been selected)" << endl;
+   }
+   else if (strat == SIMPLE_MOVING_AVG){
+      cout << "(Strategy: \'Simple Moving Average\')" << endl;
+   }
+   else if (strat == DOUBLE_MOVING_AVG){
+      cout << "(Strategy: \'Double Moving Average\')" << endl;
+   }
+   else if (strat == DOUBLE_EXP_MOVING_AVG){
+      cout << "(Strategy: \'Double Exponential Moving Average\')" << endl;
+   }
+   else if (strat == EXP_MOVING_AVG){
+      cout << "(Strategy: \'Exponential Moving Average\')" << endl;
    }
    else{
-      cout << "ERROR: " << file << ")" << endl;
+     cout << "(ERROR: strategy has not been selected)" << endl;
    }
-   cout << "2. Load Account" << endl
-        << "3. Create Account" << endl
-        << "4. Setup Strategy" << endl
-        << "5. Start Strategy" << endl
-        << "6. Exit Algo-Trade System" << endl
+   cout << "4. Start Strategy" << endl
+        << "5. Exit Algo-Trade System" << endl
         << "Enter (#1-" << MAX_OPTIONS << "): ";
 }
 
