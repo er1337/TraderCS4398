@@ -281,6 +281,7 @@ int main() {
                   break;
              case 5:
                  parameterOptimize(account, series, commission);
+                 cout << "Parameter Optimization has been completed, please enter any character and press enter to go back to the main menu ..." << endl;
                  cin >> garbageQuery;
                  break;
             case MAX_OPTIONS:
